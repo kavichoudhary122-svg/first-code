@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-Do</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: 20px auto; padding: 0 16px; }
+    input { padding: 10px; width: 65%; }
+    button { padding: 10px; }
+    li { padding: 8px 0; cursor: pointer; }
+    .done { text-decoration: line-through; opacity: .5; }
+  </style>
+</head>
+<body>
+  <h1>My To-Do List</h1>
+  <input id="task" placeholder="New task">
+  <button onclick="add()">Add</button>
+  <ul id="list"></ul>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+    function save() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      render();
+    }
+
+    function add() {
+      const input = document.getElementById("task");
+      if (!input.value.trim()) return;
+      tasks.push({ text: input.value, done: false });
+      input.value = "";
+      save();
+    }
+
+    function toggle(i) {
+      tasks[i].done = !tasks[i].done;
+      save();
+    }
+
+    function render() {
+      document.getElementById("list").innerHTML = tasks
+        .map((t, i) => `<li class="${t.done ? "done" : ""}" onclick="toggle(${i})">${t.text}</li>`)
+        .join("");
+    }
+
+    render();
+  </script>
+</body>
+</html>
